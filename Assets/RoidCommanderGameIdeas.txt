@@ -1,0 +1,7 @@
+Roid Commander Game Ideas:
+
+- Planets spawn with random colors, enemies can spawn at a planet that is in their range of color
+
+- Different types of ammo: Basic, Piercing, Richocheting, Laser, etc.
+
+- Star/space background
