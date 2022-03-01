@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     // Movement
     [SerializeField] private float moveSpeed;
     [SerializeField] private float rotateSpeed;
+    [SerializeField] private float rotateAccelTime = 0f;
+    [SerializeField] private float rotateAccelOffset = 0.4f;
     
     // Shooting
     public GameObject bullet;
@@ -86,6 +88,7 @@ public class Player : MonoBehaviour
         if(Input.GetKeyDown(left))
         {
             lastPressed = "left";
+            rotateAccelTime = 0;
         }
         if(!Input.GetKey(left))
         {
@@ -99,6 +102,7 @@ public class Player : MonoBehaviour
         if(Input.GetKeyDown(right))
         {
             lastPressed = "right";
+            rotateAccelTime = 0;
         }
         if(!Input.GetKey(right))
         {
@@ -169,26 +173,29 @@ public class Player : MonoBehaviour
 
         if(rotateRight == true && rotateLeft == false)
         {
-            tf.Rotate(-Vector3.forward * rotateSpeed);
+            tf.Rotate(-Vector3.forward * rotateSpeed * rotateAccelTime / (rotateAccelTime + rotateAccelOffset));
+            rotateAccelTime++;
             //Debug.Log("RotateRight");
         }
         if(rotateLeft == true && rotateRight == false)
         {
-            tf.Rotate(Vector3.forward * rotateSpeed);
+            tf.Rotate(Vector3.forward * rotateSpeed * rotateAccelTime / (rotateAccelTime + rotateAccelOffset));
+            rotateAccelTime++;
             //Debug.Log("RotateLeft");
         }
         if(rotateRight == true && rotateLeft == true)
         {
             if(lastPressed == "left")
             {
-                tf.Rotate(Vector3.forward * rotateSpeed);
+                tf.Rotate(Vector3.forward * rotateSpeed * rotateAccelTime / (rotateAccelTime + rotateAccelOffset));
                 //Debug.Log("Both: RotateLeft");
             }
             if(lastPressed == "right")
             {
-                tf.Rotate(-Vector3.forward * rotateSpeed);
+                tf.Rotate(-Vector3.forward * rotateSpeed * rotateAccelTime / (rotateAccelTime + rotateAccelOffset));
                 //Debug.Log("Both: RotateRight");
             }
+            rotateAccelTime++;
         }
     }
 
