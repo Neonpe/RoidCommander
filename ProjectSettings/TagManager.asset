@@ -9,6 +9,16 @@ TagManager:
   - EnemySpawner
   - Enemy16
   - Enemy32
+  - Planet
+  - ZapperProjectile
+  - Mauler
+  - Mangler
+  - Infector
+  - Zapper
+  - MaulerSpawner
+  - ManglerSpawner
+  - InfectorSpawner
+  - ZapperSpawner
   layers:
   - Default
   - TransparentFX
@@ -18,19 +28,19 @@ TagManager:
   - UI
   - Player
   - PlayerBullet
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Mauler
+  - Mangler
+  - Infector
+  - MaulerRangeDetect
+  - ManglerRangeDetect
+  - InfectorRangeDetect
+  - Zapper
+  - ZapperRangeDetect
+  - ZapperProjectile
+  - MaulerSpawner
+  - ManglerSpawner
+  - InfectorSpawner
+  - ZapperSpawner
   - 
   - 
   - 
