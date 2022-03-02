@@ -18,7 +18,7 @@ public class UI_HealthBar : MonoBehaviour
         currentHealth = parentPlayer.GetComponent<Player>().health;
         targetHealth = currentHealth;
         timer = 0;
-        changeRate = 1;
+        changeRate = 1f;
     }
 
     // Update is called once per frame
@@ -29,7 +29,7 @@ public class UI_HealthBar : MonoBehaviour
             if(targetHealth != parentPlayer.GetComponent<Player>().health)
             {
                 targetHealth = parentPlayer.GetComponent<Player>().health;
-                timer = (int)(Mathf.Abs(currentHealth - targetHealth) / changeRate);
+                timer = (int)(Mathf.Abs(currentHealth - targetHealth) * changeRate);
             }
             if(timer > 0)
             {

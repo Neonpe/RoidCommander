@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2373997978944248774}
   m_Layer: 10
   m_Name: EnemyShip_V3
-  m_TagString: Enemy16
+  m_TagString: Infector
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -143,6 +143,7 @@ MonoBehaviour:
   target1: {fileID: 0}
   healthBar: {fileID: 4827531100208994298, guid: 0fef5787205730d4784cc1dadf605888, type: 3}
   health: 100
+  projectile: {fileID: 0}
 --- !u!1001 &76612646721596872
 PrefabInstance:
   m_ObjectHideFlags: 0

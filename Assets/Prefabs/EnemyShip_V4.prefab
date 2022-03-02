@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2217402461386693724}
   m_Layer: 14
   m_Name: EnemyShip_V4
-  m_TagString: Enemy16
+  m_TagString: Zapper
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

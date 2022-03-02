@@ -31,6 +31,7 @@ public class Player : MonoBehaviour
     public GameObject healthBar;
     public float health = 100f;
     private float damageCooldown = 0.5f;
+    private float deadTimer = 2f;
 
 
     // Checks
@@ -42,6 +43,8 @@ public class Player : MonoBehaviour
     private bool shoot = false;
     private bool canShoot = true;
     private bool canTakeDamage = true;
+    private bool canMove = true;
+    private bool isDead = false;
     
 
     void Start()
@@ -49,6 +52,7 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         tf = GetComponent<Transform>();
         health = 100f;
+        canMove = true;
 
         GameObject initHealthBar = Instantiate(healthBar, new Vector3(tf.position.x, (tf.position.y - 0.5f), tf.position.z), Quaternion.identity);
         PlayerHealthBar initPlayerHealthBar = initHealthBar.GetComponent<PlayerHealthBar>();
@@ -61,61 +65,64 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKey(up))
+        if(canMove == true)
         {
-            activatethrust = true;
-            //Debug.Log("w Pressed");
-        }
-        if(!Input.GetKey(up))
-        {
-            activatethrust = false;
-            //Debug.Log("w Released");
-        }
+            if(Input.GetKey(up))
+            {
+                activatethrust = true;
+                //Debug.Log("w Pressed");
+            }
+            if(!Input.GetKey(up))
+            {
+                activatethrust = false;
+                //Debug.Log("w Released");
+            }
 
-        if(Input.GetKey(down))
-        {
-            activateBoost = true;
-        }
-        if(!Input.GetKey(down))
-        {
-            activateBoost = false;
-        }
+            if(Input.GetKey(down))
+            {
+                activateBoost = true;
+            }
+            if(!Input.GetKey(down))
+            {
+                activateBoost = false;
+            }
 
-        if(Input.GetKey(left))
-        {
-            rotateLeft = true;
-        }
-        if(Input.GetKeyDown(left))
-        {
-            lastPressed = "left";
-            rotateAccelTime = 0;
-        }
-        if(!Input.GetKey(left))
-        {
-            rotateLeft = false;
-        }
+            if(Input.GetKey(left))
+            {
+                rotateLeft = true;
+            }
+            if(Input.GetKeyDown(left))
+            {
+                lastPressed = "left";
+                rotateAccelTime = 0;
+            }
+            if(!Input.GetKey(left))
+            {
+                rotateLeft = false;
+            }
 
-        if(Input.GetKey(right))
-        {
-            rotateRight = true;
-        }
-        if(Input.GetKeyDown(right))
-        {
-            lastPressed = "right";
-            rotateAccelTime = 0;
-        }
-        if(!Input.GetKey(right))
-        {
-            rotateRight = false;
-        }
+            if(Input.GetKey(right))
+            {
+                rotateRight = true;
+            }
+            if(Input.GetKeyDown(right))
+            {
+                lastPressed = "right";
+                rotateAccelTime = 0;
+            }
+            if(!Input.GetKey(right))
+            {
+                rotateRight = false;
+            }
 
-        if(Input.GetKey(fire))
-        {
-            shoot = true;
-        }
-        if(!Input.GetKey(fire))
-        {
-            shoot = false;
+            if(Input.GetKey(fire))
+            {
+                shoot = true;
+            }
+            if(!Input.GetKey(fire))
+            {
+                shoot = false;
+            }
         }
     }
 
@@ -123,17 +130,44 @@ public class Player : MonoBehaviour
     {
         if(health <= 0)
         {
-            tf.position = Vector3.zero;
-
-            health = 100f;
+            //Debug.Log(health);
+            isDead = true;
+            canMove = false;
             activatethrust = false;
             activateBoost = false;
             rotateLeft = false;
             rotateRight = false;
             shoot = false;
-            canShoot = true;
-            canTakeDamage = true;
+            canShoot = false;
         }
+
+        if(isDead == true)
+        {
+            if(deadTimer <= 0)
+            {
+                //Debug.Log("Reset");
+                tf.position = Vector3.zero;
+
+                health = 100f;
+                activatethrust = false;
+                activateBoost = false;
+                rotateLeft = false;
+                rotateRight = false;
+                shoot = false;
+                canShoot = true;
+                canTakeDamage = true;
+                canMove = true;
+                isDead = false;
+                deadTimer = 2f;
+            }
+            if(deadTimer > 0)
+            {
+                //Debug.Log(deadTimer);
+                deadTimer -= Time.deltaTime;
+            }
+        }
+
+        
 
         if(currentTime <= 0)
         {
@@ -205,18 +239,18 @@ public class Player : MonoBehaviour
 
     void OnCollisionStay2D(Collision2D col)
     {
-        if(canTakeDamage == true)
+        if(canTakeDamage == true && health > 0)
         {
             canTakeDamage = false;
             damageCooldown = 0.5f;
             //Debug.Log("Collision: " + col);
-            if(col.gameObject.tag == "Enemy16" || col.gameObject.tag == "Enemy32")
+            if(col.gameObject.tag == "Mauler" || col.gameObject.tag == "Mangler" || col.gameObject.tag == "Infector" || col.gameObject.tag == "Zapper")
             {
                 //Debug.Log("Current Health: " + health);
                 health -= col.gameObject.GetComponent<EnemyBehaviour>().getMeleeDamage();
                 //Debug.Log("After Col Health: " + health);
             }
-            if(col.gameObject.tag == "EnemySpawner")
+            if(col.gameObject.tag == "MaulerSpawner" || col.gameObject.tag == "ManglerSpawner" || col.gameObject.tag == "InfectorSpawner" || col.gameObject.tag == "ZapperSpawner")
             {
                 //Debug.Log("Current Health: " + health);
                 health -= col.gameObject.GetComponent<EnemySpawnerController>().getMeleeDamage();
@@ -229,7 +263,7 @@ public class Player : MonoBehaviour
     {
         if(col.gameObject.tag == "ZapperProjectile")
         {
-            if(canTakeDamage == true)
+            if(canTakeDamage == true && health > 0)
             {
                 canTakeDamage = false;
                 damageCooldown = 0.5f;

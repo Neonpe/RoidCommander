@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 7867127224527952416}
   m_Layer: 8
   m_Name: EnemyShip_V1
-  m_TagString: Enemy32
+  m_TagString: Mauler
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -143,6 +143,7 @@ MonoBehaviour:
   target1: {fileID: 0}
   healthBar: {fileID: 4827531100208994298, guid: 0fef5787205730d4784cc1dadf605888, type: 3}
   health: 100
+  projectile: {fileID: 0}
 --- !u!1001 &7468742775904211276
 PrefabInstance:
   m_ObjectHideFlags: 0
