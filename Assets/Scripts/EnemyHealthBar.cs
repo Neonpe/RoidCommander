@@ -6,11 +6,20 @@ public class EnemyHealthBar : MonoBehaviour
 {
     Vector3 localScale;
     public GameObject parentEnemy;
+    float currentHealth;
+    float targetHealth;
+    float previousTargetHealth;
+    [SerializeField] float changeRate;
+    int timer;
 
     // Start is called before the first frame update
     void Start()
     {
         localScale = transform.localScale;
+        currentHealth = parentEnemy.GetComponent<EnemyBehaviour>().health;
+        targetHealth = currentHealth;
+        timer = 0;
+        changeRate = 1;
     }
 
     // Update is called once per frame
@@ -23,23 +32,36 @@ public class EnemyHealthBar : MonoBehaviour
         }
         else
         {
-            if(parentEnemy != null && parentEnemy.tag == "Enemy16")
+            if(parentEnemy != null)
             {
-                localScale.x = (parentEnemy.GetComponent<EnemyBehaviour>().health / 100f);
-                transform.localScale = localScale;
-                transform.position = new Vector3(parentEnemy.transform.position.x, (parentEnemy.transform.position.y - 0.375f), parentEnemy.transform.position.z);
-            }
-            if(parentEnemy != null && parentEnemy.tag == "Enemy32")
-            {
-                localScale.x = (parentEnemy.GetComponent<EnemyBehaviour>().health / 200f);
-                transform.localScale = localScale;
-                transform.position = new Vector3(parentEnemy.transform.position.x, (parentEnemy.transform.position.y - 0.5f), parentEnemy.transform.position.z);
-            }
-            if(parentEnemy != null && parentEnemy.tag == "EnemySpawner")
-            {
-                localScale.x = (parentEnemy.GetComponent<EnemySpawnerController>().health / 300f);
-                transform.localScale = localScale;
-                transform.position = new Vector3(parentEnemy.transform.position.x, (parentEnemy.transform.position.y - 1.75f), parentEnemy.transform.position.z);
+                if(targetHealth != parentEnemy.GetComponent<EnemyBehaviour>().health)
+                {
+                    targetHealth = parentEnemy.GetComponent<EnemyBehaviour>().health;
+                    timer = (int)(Mathf.Abs(currentHealth - targetHealth) / changeRate);
+                }
+                if(timer > 0)
+                {
+                    currentHealth -= (currentHealth - targetHealth) / timer;
+                    timer--;
+                }
+                if(parentEnemy.tag == "Enemy16")
+                {
+                    localScale.x = (currentHealth / 100f);
+                    transform.localScale = localScale;
+                    transform.position = new Vector3(parentEnemy.transform.position.x, (parentEnemy.transform.position.y - 0.375f), parentEnemy.transform.position.z);
+                }
+                if(parentEnemy.tag == "Enemy32")
+                {
+                    localScale.x = (currentHealth / 200f);
+                    transform.localScale = localScale;
+                    transform.position = new Vector3(parentEnemy.transform.position.x, (parentEnemy.transform.position.y - 0.5f), parentEnemy.transform.position.z);
+                }
+                if(parentEnemy.tag == "EnemySpawner")
+                {
+                    localScale.x = (currentHealth / 300f);
+                    transform.localScale = localScale;
+                    transform.position = new Vector3(parentEnemy.transform.position.x, (parentEnemy.transform.position.y - 1.75f), parentEnemy.transform.position.z);
+                }
             }
         }
 
