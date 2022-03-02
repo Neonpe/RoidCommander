@@ -9,6 +9,7 @@ public class PlayerHealthBar : MonoBehaviour
     float currentHealth;
     float targetHealth;
     float previousTargetHealth;
+    [SerializeField] float changeRate;
     int timer;
 
     // Start is called before the first frame update
@@ -18,6 +19,7 @@ public class PlayerHealthBar : MonoBehaviour
         currentHealth = parentPlayer.GetComponent<Player>().health;
         targetHealth = currentHealth;
         timer = 0;
+        changeRate = 1;
     }
 
     // Update is called once per frame
@@ -32,7 +34,7 @@ public class PlayerHealthBar : MonoBehaviour
             if(targetHealth != parentPlayer.GetComponent<Player>().health)
             {
                 targetHealth = parentPlayer.GetComponent<Player>().health;
-                timer = (int)(MathF.Abs(currentHeath - targetHealth) / 5);
+                timer = (int)(Mathf.Abs(currentHealth - targetHealth) / changeRate);
             }
             if(timer > 0)
             {
