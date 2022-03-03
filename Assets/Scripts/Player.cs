@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     private Rigidbody2D rb;
     private Transform tf;
+    public GameObject GameManager;
 
     // Controls
     [SerializeField] private string up = "w";
@@ -26,6 +27,8 @@ public class Player : MonoBehaviour
     public GameObject bullet;
     [SerializeField] private float shotCooldown = 1f;
     private float currentTime = 0f;
+    [SerializeField] private int spreadShotLevel = 1;
+    [SerializeField] private int straightShotLevel = 1;
 
     // Health
     public GameObject healthBar;
@@ -167,7 +170,6 @@ public class Player : MonoBehaviour
             }
         }
 
-        
 
         if(currentTime <= 0)
         {
@@ -175,7 +177,7 @@ public class Player : MonoBehaviour
         }
         if(currentTime > 0)
         {
-            currentTime -= Time.deltaTime;
+            currentTime -= Time.fixedDeltaTime;
         }
 
         if(damageCooldown <= 0)
@@ -184,13 +186,14 @@ public class Player : MonoBehaviour
         }
         if(damageCooldown > 0)
         {
-            damageCooldown -= Time.deltaTime;
+            damageCooldown -= Time.fixedDeltaTime;
         }
 
         if(shoot == true && canShoot == true)
         {
             canShoot = false;
-            Instantiate(bullet, tf.TransformPoint(Vector3.up * 0.75f), tf.rotation);
+            Shoot(bullet,straightShotLevel,spreadShotLevel);
+
             currentTime = shotCooldown;
         }
 
@@ -275,7 +278,136 @@ public class Player : MonoBehaviour
                 Destroy(col.gameObject);
             }
         }
+        if(col.gameObject.tag == "RawMineral")
+        {
+            GameManager.GetComponent<GameManager>().rawMineralCount += 1;
+            Destroy(col.gameObject);
+            Debug.Log(GameManager.GetComponent<GameManager>().rawMineralCount);
+
+            if(GameManager.GetComponent<GameManager>().rawMineralCount == 10 || GameManager.GetComponent<GameManager>().rawMineralCount == 30)
+            {
+                if(straightShotLevel < 3)
+                {
+                    straightShotLevel += 1;
+                }
+            }
+            else if(GameManager.GetComponent<GameManager>().rawMineralCount == 20 || GameManager.GetComponent<GameManager>().rawMineralCount == 40)
+            {
+                if(spreadShotLevel < 3)
+                {
+                    spreadShotLevel += 1;
+                }
+            }
+        }
     }
 
+    void Shoot(GameObject projectile, int straightLevel, int spreadLevel)
+    {
+        if(straightLevel == 1)
+        {
+            Instantiate(projectile, tf.TransformPoint(Vector3.up * 0.75f), tf.rotation);
 
+            if(spreadLevel == 2)
+            {
+                Quaternion newRotation1 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z - 10)));
+                Quaternion newRotation2 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z + 10)));
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.5f)), newRotation1);
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.5f)), newRotation2);
+            }
+            else if(spreadLevel == 3)
+            {
+                Quaternion newRotation1 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z - 10)));
+                Quaternion newRotation2 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z + 10)));
+                Quaternion newRotation3 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z - 20)));
+                Quaternion newRotation4 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z + 20)));
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.25f)), newRotation1);
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.25f)), newRotation2);
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.5f)), newRotation3);
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.5f)), newRotation4);
+            }
+
+        }
+        if(straightLevel == 2)
+        {
+            Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.15f)), tf.rotation);
+            Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.15f)), tf.rotation);
+
+            if(spreadLevel == 2)
+            {
+                Quaternion newRotation1 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z - 10)));
+                Quaternion newRotation2 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z + 10)));
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.5f)), newRotation1);
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.5f)), newRotation2);
+            }
+            else if(spreadLevel == 3)
+            {
+                Quaternion newRotation1 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z - 10)));
+                Quaternion newRotation2 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z + 10)));
+                Quaternion newRotation3 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z - 20)));
+                Quaternion newRotation4 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z + 20)));
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.5f)), newRotation1);
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.5f)), newRotation2);
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.75f)), newRotation3);
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.75f)), newRotation4);
+            }
+        }
+        if (straightLevel == 3)
+        {
+            Instantiate(projectile, tf.TransformPoint(Vector3.up * 0.75f), tf.rotation);
+            Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.25f)), tf.rotation);
+            Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.25f)), tf.rotation);
+
+            if(spreadLevel == 2)
+            {
+                Quaternion newRotation1 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z - 10)));
+                Quaternion newRotation2 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z + 10)));
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.5f)), newRotation1);
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.5f)), newRotation2);
+            }
+            else if(spreadLevel == 3)
+            {
+                Quaternion newRotation1 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z - 10)));
+                Quaternion newRotation2 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z + 10)));
+                Quaternion newRotation3 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z - 20)));
+                Quaternion newRotation4 = Quaternion.Euler(new Vector3(0,0, (tf.localEulerAngles.z + 20)));
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.5f)), newRotation1);
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.5f)), newRotation2);
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.75f)), newRotation3);
+                Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.75f)), newRotation4);
+            }
+        }
+        /*
+        if (straightLevel == 4)
+        {
+            Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.25f)), tf.rotation);
+            Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.75f)), tf.rotation);
+            Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.25f)), tf.rotation);
+            Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.75f)), tf.rotation);
+        }
+        if (straightLevel == 5)
+        {
+            Instantiate(projectile, tf.TransformPoint(Vector3.up * 0.75f), tf.rotation);
+            Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 0.5f)), tf.rotation);
+            Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * 1f)), tf.rotation);
+            Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -0.5f)), tf.rotation);
+            Instantiate(projectile, tf.TransformPoint((Vector3.up  * 0.75f) + (Vector3.right * -1f)), tf.rotation);
+        }
+        */
+    }
+
+    void upgradeFireRate()
+    {
+        shotCooldown = shotCooldown * 0.90f;
+    }
+
+    void upgradeStraightShot()
+    {
+        straightShotLevel += 1;
+    }
+
+    void upgradeSpreadShot()
+    {
+        spreadShotLevel += 1;
+    }
+ 
 }

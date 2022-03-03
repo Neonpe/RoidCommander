@@ -28,6 +28,13 @@ public class EnemyBehaviour : MonoBehaviour
     private bool canShoot = true;
     private float shootCooldown = 1.5f;
 
+    // Resources
+    public GameObject rawMineral;
+    private int heldMinerals = 0;
+
+    bool playerInRange;
+    bool mineralInRange;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -89,7 +96,11 @@ public class EnemyBehaviour : MonoBehaviour
     {
         if(health <= 0)
         {
-            Destroy(gameObject, 0.25f);
+            for(int i=0;i<heldMinerals;i++)
+            {
+                Instantiate(rawMineral, tf.position, tf.rotation);
+            }
+            Destroy(gameObject);
         }
 
         if(moveCooldown <= 0)
@@ -143,7 +154,8 @@ public class EnemyBehaviour : MonoBehaviour
         }
         if(inRange != null && inRange.Length > 0)
         {
-            bool playerInRange = false;
+            playerInRange = false;
+            mineralInRange = false;
 
             foreach (GameObject obj in inRange)
             {
@@ -154,16 +166,48 @@ public class EnemyBehaviour : MonoBehaviour
                     break;
                 }
             }
-            if(playerInRange == false)
+
+            foreach(GameObject obj in inRange)
+            {
+                if(obj != null && obj.tag == "RawMineral")
+                {
+                    target1 = obj;
+                    mineralInRange = true;
+                    break;
+                }
+            }
+
+            if(playerInRange == false && mineralInRange == false)
             {
                 target1 = null;
+            }
+
+        }
+
+        if(playerInRange == false && mineralInRange == true)
+        {
+            if(target1 != null && target1.tag == "RawMineral")
+            {
+                if(canMove == true)
+                {
+                    canMove = false;
+                    moveCooldown = Random.Range(0.5f, 1.5f);
+                    
+                    float targetx = target1.transform.position.x - tf.position.x;
+                    float targety = target1.transform.position.y - tf.position.y;
+
+                    float angle = -90f + Mathf.Atan2(targety, targetx) * Mathf.Rad2Deg;
+                    tf.rotation = Quaternion.Euler(new Vector3(0,0,angle));
+
+                    rb.AddForce(tf.up * Random.Range(1f, 2f), ForceMode2D.Impulse);
+                }
             }
         }
 
 
         if(enemyType == "mauler")
         {
-            if(target1 != null && (target1.tag == "Player" || target1.tag == "Mauler" || target1.tag == "Mangler" || target1.tag == "Infector" || target1.tag == "Zapper" || target1.tag == "MaulerSpawner" || target1.tag == "ManglerSpawner" || target1.tag == "InfectorSpawner" || target1.tag == "ZapperSpawner"))
+            if(target1 != null && (target1.tag == "Player" || target1.tag == "Infector" || target1.tag == "Zapper" || target1.tag == "InfectorSpawner" || target1.tag == "ZapperSpawner"))
             {
                 if(canMove == true)
                 {
@@ -199,7 +243,7 @@ public class EnemyBehaviour : MonoBehaviour
         }
         else if(enemyType == "mangler")
         {
-            if(target1 != null && (target1.tag == "Player" || target1.tag == "Mauler" || target1.tag == "Mangler" || target1.tag == "Infector" || target1.tag == "Zapper" || target1.tag == "MaulerSpawner" || target1.tag == "ManglerSpawner" || target1.tag == "InfectorSpawner" || target1.tag == "ZapperSpawner"))
+            if(target1 != null && (target1.tag == "Player" || target1.tag == "Infector" || target1.tag == "Zapper" || target1.tag == "InfectorSpawner" || target1.tag == "ZapperSpawner"))
             {
                 if(canMove == true)
                 {
@@ -234,7 +278,7 @@ public class EnemyBehaviour : MonoBehaviour
         }
         else if(enemyType == "infector")
         {
-            if(target1 != null && (target1.tag == "Player" || target1.tag == "Mauler" || target1.tag == "Mangler" || target1.tag == "Infector" || target1.tag == "Zapper" || target1.tag == "MaulerSpawner" || target1.tag == "ManglerSpawner" || target1.tag == "InfectorSpawner" || target1.tag == "ZapperSpawner"))
+            if(target1 != null && (target1.tag == "Player" || target1.tag == "Mauler" || target1.tag == "Mangler" || target1.tag == "Zapper" || target1.tag == "MaulerSpawner" || target1.tag == "ManglerSpawner" || target1.tag == "ZapperSpawner"))
             {
                 if(canMove == true)
                 {
@@ -269,7 +313,7 @@ public class EnemyBehaviour : MonoBehaviour
         }
         if(enemyType == "zapper")
         {
-            if(target1 != null && (target1.tag == "Player" || target1.tag == "Mauler" || target1.tag == "Mangler" || target1.tag == "Infector" || target1.tag == "Zapper" || target1.tag == "MaulerSpawner" || target1.tag == "ManglerSpawner" || target1.tag == "InfectorSpawner" || target1.tag == "ZapperSpawner"))
+            if(target1 != null && (target1.tag == "Player" || target1.tag == "Mauler" || target1.tag == "Mangler" || target1.tag == "Infector" || target1.tag == "MaulerSpawner" || target1.tag == "ManglerSpawner" || target1.tag == "InfectorSpawner"))
             {
                 if(canShoot == true)
                 {
@@ -373,6 +417,11 @@ public class EnemyBehaviour : MonoBehaviour
                 health -= 10f;
                 Destroy(col.gameObject);
             }
+        }
+        if(col.gameObject.tag == "RawMineral")
+        {
+            heldMinerals += 1;
+            Destroy(col.gameObject);
         }
     }
 
