@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
     private Transform playerTf;
 
     public GameObject player;
+    public GameObject[] planetList;
     
     public int rawMineralCount;
 
@@ -19,10 +20,18 @@ public class GameManager : MonoBehaviour
     private int smallSpawnAmount;
 
     private Vector3 spawnPosition;
+    private Vector3 planetSpawnPosition;
+
+    private int planetSpawnCount;
 
     [SerializeField] private float asteroidSpawnCooldown = 0f;
 
     private bool canSpawnAsteroid = true;
+
+    // Time
+    public float gameTimer;
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -30,6 +39,64 @@ public class GameManager : MonoBehaviour
         tf = GetComponent<Transform>();
         playerTf = player.GetComponent<Transform>();
         rawMineralCount = 0;
+        planetSpawnCount = 1;
+        gameTimer = 0f;
+
+        if(planetList != null && planetList.Length > 0)
+        {
+            foreach(GameObject obj in planetList)
+            {
+                float spawnX = 0f;
+                float spawnY = 0f;
+                if(planetSpawnCount == 1)
+                {
+                    spawnX = Random.Range(10f,30f);
+                    spawnY = Random.Range(10f,30f);
+                }
+                else if(planetSpawnCount == 2)
+                {
+                    spawnX = Random.Range(-30f,-10f);
+                    spawnY = Random.Range(-30f,-10f);
+                }
+                else if(planetSpawnCount == 3)
+                {
+                    spawnX = Random.Range(-30f,-10f);
+                    spawnY = Random.Range(10f,30f);
+                }
+                else if(planetSpawnCount == 4)
+                {
+                    spawnX = Random.Range(10f,30f);
+                    spawnY = Random.Range(-30f,-10f);
+                }
+                else if(planetSpawnCount == 5)
+                {
+                    spawnX = Random.Range(50f,70f);
+                    spawnY = Random.Range(10f,30f);
+                }
+                else if(planetSpawnCount == 6)
+                {
+                    spawnX = Random.Range(-70f,-50f);
+                    spawnY = Random.Range(-30f,-10f);
+                }
+                else if(planetSpawnCount == 7)
+                {
+                    spawnX = Random.Range(-30f,-10f);
+                    spawnY = Random.Range(50f,70f);
+                }
+                else if(planetSpawnCount == 8)
+                {
+                    spawnX = Random.Range(10f,30f);
+                    spawnY = Random.Range(-50f,-70f);
+                }
+
+                spawnPosition = new Vector3(spawnX, spawnY, 0);
+                Instantiate(obj, playerTf.TransformPoint(spawnPosition), tf.rotation);
+                planetSpawnCount += 1;
+            }
+        }
+        
+
+
     }
 
     // Update is called once per frame
@@ -39,6 +106,8 @@ public class GameManager : MonoBehaviour
     }
     void FixedUpdate()
     {
+        gameTimer += Time.fixedDeltaTime;
+        
         if(asteroidSpawnCooldown <= 0)
         {
             canSpawnAsteroid = true;

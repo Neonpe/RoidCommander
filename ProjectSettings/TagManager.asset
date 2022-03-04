@@ -22,6 +22,7 @@ TagManager:
   - LargeAsteroid
   - SmallAsteroid
   - RawMineral
+  - Boundary
   layers:
   - Default
   - TransparentFX
@@ -46,7 +47,7 @@ TagManager:
   - ZapperSpawner
   - Asteroid
   - RawMineral
-  - 
+  - Boundary
   - 
   - 
   - 

@@ -11,6 +11,8 @@ public class EnemySpawnerController : MonoBehaviour
     [SerializeField] private float meleeDamage = 10f;
     [SerializeField] private float rangedDamage = 5f;
 
+    public GameObject parentPlanet;
+
     // Health
     public GameObject healthBar;
     public float health = 1000f;
@@ -77,7 +79,12 @@ public class EnemySpawnerController : MonoBehaviour
     {
         if(health <= 0)
         {
-            Destroy(gameObject, 0.25f);
+            spawnEnemy1();
+            spawnEnemy2();
+            spawnEnemy3();
+            spawnEnemy4();
+            parentPlanet.GetComponent<PlanetBehaviour>().decrementSpawnerCount(1);
+            Destroy(gameObject);
         }
 
         if(spawnCooldown <= 0)
